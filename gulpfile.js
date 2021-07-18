@@ -37,7 +37,7 @@ const fonts = () => {
 
 // svg sprites
 const svgSprites = () => {
-    return src('./src/img/**.svg')
+    return src('./src/img/**/**.svg')
         .pipe(svgSprite({
             mode: {
                 stack: {
@@ -85,7 +85,7 @@ const htmlInclude = () => {
 
 // dest img
 const imgToApp = () => {
-    return src(['./src/img/**.jpg', './src/img/**.png', './src/img/**.jpeg'])
+    return src(['./src/img/**/**.jpg', './src/img/**/**.png', './src/img/**/**.jpeg'])
         .pipe(dest('./app/img'))
 }
 
@@ -105,28 +105,7 @@ const clean = () => {
 
 // scripts
 const scripts = () => {
-    return src('./src/js/main.js')
-        .pipe(webpackStream({
-            output: {
-                filename: 'main.js'
-            },
-            module: {
-                rules: [{
-                    test: /\.m?js$/,
-                    exclude: /node_modules/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: [
-                                ['@babel/preset-env', {
-                                    targets: "defaults"
-                                }]
-                            ]
-                        }
-                    }
-                }]
-            }
-        }))
+    return src('./src/js/**/**.js')
         .pipe(sourcemaps.init())
         .pipe(uglify().on('error', notify.onError()))
         .pipe(sourcemaps.write('.'))
@@ -145,10 +124,10 @@ const watchFiles = () => {
 
     watch('./src/scss/**/*.scss', styles);
     watch('./src/index.html', htmlInclude);
-    watch('./src/img/**.jpg', imgToApp);
-    watch('./src/img/**.png', imgToApp);
-    watch('./src/img/**.jpeg', imgToApp);
-    watch('./src/img/**.svg', svgSprites);
+    watch('./src/img/**/**.jpg', imgToApp);
+    watch('./src/img/**/**.png', imgToApp);
+    watch('./src/img/**/**.jpeg', imgToApp);
+    watch('./src/img/**/**.svg', svgSprites);
     watch('./src/resources/**', resources);
     watch('./src/fonts/**.ttf', fonts);
     watch('./src/js/**/*.js', scripts);
@@ -169,7 +148,7 @@ exports.default = series(clean, parallel(htmlInclude, scripts, fonts, resources,
 
 // compress
 const tinypng = () => {
-    return src(['./src/img/**.jpg', './src/img/**.png', './src/img/**.jpeg'])
+    return src(['./src/img/**/**.jpg', './src/img/**/**.png', './src/img/**/**.jpeg'])
         .pipe(tiny({
             key: 'LZQqrGgVXzdQRdPYJMKhv6R5hs6kQMr2',
             log: true
@@ -199,32 +178,11 @@ const stylesBuild = () => {
 
 // scripts
 const scriptsBuild = () => {
-    return src('./src/js/main.js')
-        .pipe(webpackStream({
-            mode: 'development',
-            output: {
-                filename: 'main.js',
-            },
-            module: {
-                rules: [{
-                    test: /\.m?js$/,
-                    exclude: /(node_modules|bower_components)/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env']
-                        }
-                    }
-                }]
-            },
-        }))
-        .on('error', function (err) {
-            console.error('WEBPACK ERROR', err);
-            this.emit('end'); // Don't stop the rest of the task
-        })
-        .pipe(uglify().on("error", notify.onError()))
+    return src('./src/js/**/**.js')
+        .pipe(uglify().on('error', notify.onError()))
         .pipe(dest('./app/js'))
 }
+
 
 
 // start build
